@@ -1,6 +1,6 @@
 "use client";
 
-import { createTodoAction } from "@/actions/todo.actions";
+import { createTodoAction, updateTodoAction } from "@/actions/todo.actions";
 import {
   Dialog,
   DialogContent,
@@ -13,21 +13,22 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { TodoFormValues, todoFormSchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
+import { Pen, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Textarea } from "./ui/textarea";
 import { useState } from "react";
 import Spinner from "./Spinner";
+import { ITodo } from "@/interfaces";
 
-const AddTodoForm = () => {
+const EditTodoForm = ({ todo }: { todo: ITodo }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const defaultValues: Partial<TodoFormValues> = {
-    title: "",
-    body: "",
-    completed: false,
+    title: todo.title,
+    body: todo.body as string,
+    completed: todo.completed,
   };
 
   // const todos = await getTodoListAction();
@@ -37,9 +38,9 @@ const AddTodoForm = () => {
     mode: "onChange",
   });
 
-  const onSubmit = async ({ title, body, completed }: TodoFormValues) => {
+  const onSubmit = async (data: TodoFormValues) => {
     setLoading(true);
-    await createTodoAction({ title, body, completed });
+    await updateTodoAction({ id: todo.id, title: data.title, body: data.body as string, completed: data.completed });
     setLoading(false);
     setOpen(false);
   };
@@ -48,13 +49,12 @@ const AddTodoForm = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="ml-auto">
         <Button>
-          <Plus size={14} className="mr-1" />
-          New Todo
+          <Pen size={16} />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add a new Todo</DialogTitle>
+          <DialogTitle>Edit this Todo</DialogTitle>
         </DialogHeader>
         <div className="py-4">
           <Form {...form}>
@@ -123,4 +123,4 @@ const AddTodoForm = () => {
   );
 };
 
-export default AddTodoForm;
+export default EditTodoForm;
