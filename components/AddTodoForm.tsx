@@ -14,20 +14,23 @@ import { Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Textarea } from "./ui/textarea";
+import { todoFormSchema } from "@/schema";
 
 const prisma = new PrismaClient();
 
 const AddTodoForm = () => {
   const createTodo = async (formData: FormData) => {
     "use server";
-    console.log(formData);
-    // await prisma.todo.create({
-    //   data: {
-    //     title,
-    //     body,
-    //     completed,
-    //   },
-    // });
+    const form = Object.fromEntries(formData.entries());
+    const { title, body, completed } = todoFormSchema.parse(form);
+
+    await prisma.todo.create({
+      data: {
+        title,
+        body,
+        completed,
+      },
+    });
   };
 
   return (
@@ -47,7 +50,7 @@ const AddTodoForm = () => {
           <form action={createTodo} className="space-y-8">
             <Input name="title" />
             <Textarea name="body" />
-            <Checkbox name="complete" />
+            <Checkbox name="completed" />
             <Button type="submit">Save changes</Button>
           </form>
         </div>
