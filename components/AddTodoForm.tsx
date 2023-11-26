@@ -1,5 +1,6 @@
-// "use client";
+"use client";
 
+import { createTodoAction } from "@/actions/todo.actions";
 import {
   Dialog,
   DialogContent,
@@ -8,30 +9,32 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { PrismaClient } from "@prisma/client";
+import { TodoFormValues, todoFormSchema } from "@/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Textarea } from "./ui/textarea";
-import { todoFormSchema } from "@/schema";
-import { Label } from "./ui/label";
-
-const prisma = new PrismaClient();
 
 const AddTodoForm = () => {
-  const createTodo = async (formData: FormData) => {
-    "use server";
-    const form = Object.fromEntries(formData.entries());
-    const { title, body, completed } = todoFormSchema.parse(form);
+  const defaultValues: Partial<TodoFormValues> = {
+    title: "",
+    body: "",
+    completed: false,
+  };
 
-    await prisma.todo.create({
-      data: {
-        title,
-        body,
-        completed,
-      },
-    });
+  // const todos = await getTodoListAction();
+  const form = useForm<TodoFormValues>({
+    resolver: zodResolver(todoFormSchema),
+    defaultValues,
+    mode: "onChange",
+  });
+
+  const onSubmit = async (data: TodoFormValues) => {
+    await createTodoAction({ title: data.title, body: data.body, completed: data.completed });
   };
 
   return (
@@ -45,32 +48,60 @@ const AddTodoForm = () => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add a new Todo</DialogTitle>
-          <DialogDescription>
-            Your to-do item will be uncompleted by default unless you check completed input it.
-          </DialogDescription>
         </DialogHeader>
-        <div className="py-4 space-y-4">
-          <form action={createTodo} className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="title" className="text-sm">
-                Title
-              </Label>
-              <Input name="title" id="title" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="body" className="text-sm">
-                Short Description
-              </Label>
-              <Textarea name="body" id="body" />
-            </div>
-            <div className="flex items-center">
-              <Label className="order-2 ml-2 text-sm" htmlFor="completed">
-                Completed
-              </Label>
-              <Checkbox name="completed" id="completed" />
-            </div>
-            <Button type="submit">Save</Button>
-          </form>
+        <div className="py-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Got to gym" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="body"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Short Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Tell us a little bit about yourself" className="resize-none" {...field} />
+                    </FormControl>
+                    <FormDescription>You can write a short description about your next todo.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="completed"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center space-x-2">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} {...field} />
+                      </FormControl>
+                      <FormLabel>Completed</FormLabel>
+                    </div>
+                    <FormDescription>
+                      Your to-do item will be uncompleted by default unless you checked it.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">Save changes</Button>
+            </form>
+          </Form>
         </div>
       </DialogContent>
     </Dialog>
