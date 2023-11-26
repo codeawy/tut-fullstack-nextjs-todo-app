@@ -18,11 +18,13 @@ import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { createTodoAction } from "@/actions/todo.actions";
+import { Checkbox } from "./ui/checkbox";
 
 const AddTodoForm = () => {
   const defaultValues: Partial<TodoFormValues> = {
-    title: "DEFAULT TITLE",
-    body: "DEFAULT BODY",
+    title: "",
+    body: "",
+    completed: false,
   };
 
   // const todos = await getTodoListAction();
@@ -33,7 +35,7 @@ const AddTodoForm = () => {
   });
 
   const onSubmit = async (data: TodoFormValues) => {
-    await createTodoAction({ title: data.title, body: data.body });
+    await createTodoAction({ title: data.title, body: data.body, completed: data.completed });
   };
 
   return (
@@ -76,6 +78,20 @@ const AddTodoForm = () => {
                       <Textarea placeholder="Tell us a little bit about yourself" className="resize-none" {...field} />
                     </FormControl>
                     <FormDescription>You can write a short description about your next todo.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="completed"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} {...field} />
+                    </FormControl>
+                    <FormLabel>Completed</FormLabel>
                     <FormMessage />
                   </FormItem>
                 )}
