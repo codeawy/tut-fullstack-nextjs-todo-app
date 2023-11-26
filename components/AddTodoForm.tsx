@@ -18,8 +18,12 @@ import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Textarea } from "./ui/textarea";
+import { useState } from "react";
+import Spinner from "./Spinner";
 
 const AddTodoForm = () => {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const defaultValues: Partial<TodoFormValues> = {
     title: "",
     body: "",
@@ -33,12 +37,15 @@ const AddTodoForm = () => {
     mode: "onChange",
   });
 
-  const onSubmit = async (data: TodoFormValues) => {
-    await createTodoAction({ title: data.title, body: data.body, completed: data.completed });
+  const onSubmit = async ({ title, body, completed }: TodoFormValues) => {
+    setLoading(true);
+    await createTodoAction({ title, body, completed });
+    setLoading(false);
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="ml-auto">
         <Button>
           <Plus size={14} className="mr-1" />
@@ -99,7 +106,15 @@ const AddTodoForm = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Save changes</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Spinner /> Saving
+                  </>
+                ) : (
+                  "Save"
+                )}
+              </Button>
             </form>
           </Form>
         </div>
