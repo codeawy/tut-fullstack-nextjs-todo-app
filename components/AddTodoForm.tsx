@@ -31,9 +31,7 @@ const AddTodoForm = () => {
     mode: "onChange",
   });
 
-  const onSubmit = () => {
-    // ** YOU CAN'T USE SERVER ACTIONS HERE!
-  };
+  const onSubmit = () => {};
 
   return (
     <Dialog>
