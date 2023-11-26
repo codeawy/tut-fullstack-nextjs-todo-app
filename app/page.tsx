@@ -1,19 +1,16 @@
 import { getTodoListAction } from "@/actions/todo.actions";
 import AddTodoForm from "@/components/AddTodoForm";
-import TodoTable from "@/components/TodoTable";
+import TodosTable from "@/components/TodoTable";
 
 export default async function Home() {
   const todos = await getTodoListAction();
 
   return (
     <main className="container">
-      <AddTodoForm />
-      <TodoTable />
-      <ul>
-        {todos.map(todo => (
-          <li key={todo.id}>{todo.title}</li>
-        ))}
-      </ul>
+      <div className="mx-auto flex w-full lg:w-3/4 flex-col justify-center space-y-4">
+        <AddTodoForm />
+        <TodosTable todos={todos} />
+      </div>
     </main>
   );
 }
