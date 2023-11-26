@@ -17,6 +17,7 @@ import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
+import { createTodoAction } from "@/actions/todo.actions";
 
 const AddTodoForm = () => {
   const defaultValues: Partial<TodoFormValues> = {
@@ -31,7 +32,9 @@ const AddTodoForm = () => {
     mode: "onChange",
   });
 
-  const onSubmit = () => {};
+  const onSubmit = async (data: TodoFormValues) => {
+    await createTodoAction({ title: data.title, body: data.body });
+  };
 
   return (
     <Dialog>
@@ -48,7 +51,7 @@ const AddTodoForm = () => {
         </DialogHeader>
         <div className="py-4">
           <Form {...form}>
-            <form action={onSubmit} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
                 name="title"
@@ -77,12 +80,10 @@ const AddTodoForm = () => {
                   </FormItem>
                 )}
               />
+              <Button type="submit">Save changes</Button>
             </form>
           </Form>
         </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
