@@ -1,41 +1,33 @@
-"use client";
+// "use client";
 
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { TodoFormValues, todoFormSchema } from "@/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { PrismaClient } from "@prisma/client";
 import { Plus } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
-import { createTodoAction } from "@/actions/todo.actions";
 import { Checkbox } from "./ui/checkbox";
+import { Textarea } from "./ui/textarea";
+
+const prisma = new PrismaClient();
 
 const AddTodoForm = () => {
-  const defaultValues: Partial<TodoFormValues> = {
-    title: "",
-    body: "",
-    completed: false,
-  };
-
-  // const todos = await getTodoListAction();
-  const form = useForm<TodoFormValues>({
-    resolver: zodResolver(todoFormSchema),
-    defaultValues,
-    mode: "onChange",
-  });
-
-  const onSubmit = async (data: TodoFormValues) => {
-    await createTodoAction({ title: data.title, body: data.body, completed: data.completed });
+  const createTodo = async (formData: FormData) => {
+    "use server";
+    console.log(formData);
+    // await prisma.todo.create({
+    //   data: {
+    //     title,
+    //     body,
+    //     completed,
+    //   },
+    // });
   };
 
   return (
@@ -52,53 +44,12 @@ const AddTodoForm = () => {
           <DialogDescription>Make changes to your profile here. Click save when you&apos;re done.</DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Got to gym" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="body"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Short Description</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Tell us a little bit about yourself" className="resize-none" {...field} />
-                    </FormControl>
-                    <FormDescription>You can write a short description about your next todo.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="completed"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} {...field} />
-                    </FormControl>
-                    <FormLabel>Completed</FormLabel>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit">Save changes</Button>
-            </form>
-          </Form>
+          <form action={createTodo} className="space-y-8">
+            <Input name="title" />
+            <Textarea name="body" />
+            <Checkbox name="complete" />
+            <Button type="submit">Save changes</Button>
+          </form>
         </div>
       </DialogContent>
     </Dialog>
