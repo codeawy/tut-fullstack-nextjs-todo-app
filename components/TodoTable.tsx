@@ -9,9 +9,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ITodo } from "@/interfaces";
-import { Pen, Trash } from "lucide-react";
+import TodosTableActions from "./TodosTableActions";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
 
 export default function TodosTable({ todos }: { todos: ITodo[] }) {
   return (
@@ -34,12 +33,7 @@ export default function TodosTable({ todos }: { todos: ITodo[] }) {
               {todo.completed ? <Badge>Completed</Badge> : <Badge variant="secondary">Uncompleted</Badge>}
             </TableCell>
             <TableCell className="flex items-center justify-end space-x-2">
-              <Button size={"icon"}>
-                <Pen size={16} />
-              </Button>
-              <Button size={"icon"} variant={"destructive"}>
-                <Trash size={16} />
-              </Button>
+              <TodosTableActions id={todo.id} />
             </TableCell>
           </TableRow>
         ))}
