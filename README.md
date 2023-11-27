@@ -30,12 +30,11 @@ This is a full-stack todo app built with Next.js, TypeScript, Prisma, and MongoD
    ```
 
 2. Install dependencies:
-   `   npm install`
+   `npm install`
    3.Set up environment variables:
 
    Create a `.env` file in the root directory with the necessary environment variables. Include details such as `MongoDB` connection string, `Clerk API key`, etc.
 
 3. Run the development server:
-   `    npm run dev
-   `
+   `npm run dev`
    Open http://localhost:3000 in your browser to view the app.
