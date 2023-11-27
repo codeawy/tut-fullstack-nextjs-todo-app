@@ -7,7 +7,6 @@ import { revalidatePath } from "next/cache";
 const prisma = new PrismaClient();
 
 export const getUserTodoListAction = async ({ userId }: { userId: string | null }) => {
-  // TODO ERROR HANDLING
   throw new Error("Something went wrong");
 
   return await prisma.todo.findMany({
@@ -18,6 +17,19 @@ export const getUserTodoListAction = async ({ userId }: { userId: string | null 
       createdAt: "desc",
     },
   });
+
+  // try {
+  //   return await prisma.todo.findMany({
+  //     where: {
+  //       user_id: userId as string,
+  //     },
+  //     orderBy: {
+  //       createdAt: "desc",
+  //     },
+  //   });
+  // } catch (error) {
+  //   throw new Error("Something went wrong");
+  // }
 };
 
 export const createTodoAction = async ({
@@ -31,16 +43,20 @@ export const createTodoAction = async ({
   completed: boolean;
   userId: string | null;
 }) => {
-  await prisma.todo.create({
-    data: {
-      title,
-      body,
-      completed,
-      user_id: userId as string,
-    },
-  });
+  try {
+    await prisma.todo.create({
+      data: {
+        title,
+        body,
+        completed,
+        user_id: userId as string,
+      },
+    });
 
-  revalidatePath("/");
+    revalidatePath("/");
+  } catch (error) {
+    throw new Error("Something went wrong");
+  }
 };
 export const deleteTodoAction = async ({ id }: { id: string }) => {
   await prisma.todo.delete({
@@ -52,16 +68,20 @@ export const deleteTodoAction = async ({ id }: { id: string }) => {
   revalidatePath("/");
 };
 export const updateTodoAction = async ({ id, title, body, completed }: ITodo) => {
-  await prisma.todo.update({
-    where: {
-      id,
-    },
-    data: {
-      title,
-      body,
-      completed,
-    },
-  });
+  try {
+    await prisma.todo.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        body,
+        completed,
+      },
+    });
 
-  revalidatePath("/");
+    revalidatePath("/");
+  } catch (error) {
+    throw new Error("Something went wrong");
+  }
 };
