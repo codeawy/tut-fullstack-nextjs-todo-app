@@ -87,6 +87,7 @@ const AddTodoForm = ({ userId }: { userId: string | null }) => {
                   <FormItem>
                     <div className="flex items-center space-x-2">
                       <FormControl>
+                        {/* @ts-ignore */}
                         <Checkbox checked={field.value} onCheckedChange={field.onChange} {...field} />
                       </FormControl>
                       <FormLabel>Completed</FormLabel>
