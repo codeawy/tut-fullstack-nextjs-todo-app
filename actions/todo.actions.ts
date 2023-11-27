@@ -7,8 +7,6 @@ import { revalidatePath } from "next/cache";
 const prisma = new PrismaClient();
 
 export const getUserTodoListAction = async ({ userId }: { userId: string | null }) => {
-  throw new Error("Something went wrong");
-
   return await prisma.todo.findMany({
     where: {
       user_id: userId as string,
@@ -17,19 +15,6 @@ export const getUserTodoListAction = async ({ userId }: { userId: string | null 
       createdAt: "desc",
     },
   });
-
-  // try {
-  //   return await prisma.todo.findMany({
-  //     where: {
-  //       user_id: userId as string,
-  //     },
-  //     orderBy: {
-  //       createdAt: "desc",
-  //     },
-  //   });
-  // } catch (error) {
-  //   throw new Error("Something went wrong");
-  // }
 };
 
 export const createTodoAction = async ({
