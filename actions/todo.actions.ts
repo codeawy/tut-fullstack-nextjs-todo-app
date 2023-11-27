@@ -8,6 +8,8 @@ const prisma = new PrismaClient();
 
 export const getUserTodoListAction = async ({ userId }: { userId: string | null }) => {
   // TODO ERROR HANDLING
+  throw new Error("Something went wrong");
+
   return await prisma.todo.findMany({
     where: {
       user_id: userId as string,
