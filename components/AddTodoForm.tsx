@@ -1,27 +1,20 @@
 "use client";
 
 import { createTodoAction } from "@/actions/todo.actions";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { TodoFormValues, todoFormSchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import Spinner from "./Spinner";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Textarea } from "./ui/textarea";
-import { useState } from "react";
-import Spinner from "./Spinner";
 
-const AddTodoForm = () => {
+const AddTodoForm = ({ userId }: { userId: string | null }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const defaultValues: Partial<TodoFormValues> = {
@@ -30,7 +23,6 @@ const AddTodoForm = () => {
     completed: false,
   };
 
-  // const todos = await getTodoListAction();
   const form = useForm<TodoFormValues>({
     resolver: zodResolver(todoFormSchema),
     defaultValues,
@@ -39,7 +31,7 @@ const AddTodoForm = () => {
 
   const onSubmit = async ({ title, body, completed }: TodoFormValues) => {
     setLoading(true);
-    await createTodoAction({ title, body, completed });
+    await createTodoAction({ title, body, completed, userId });
     setLoading(false);
     setOpen(false);
   };
