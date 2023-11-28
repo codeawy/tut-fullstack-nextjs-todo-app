@@ -3,15 +3,17 @@ import { ModeToggle } from "./ModeToggle";
 
 const Nav = () => {
   return (
-    <nav className="container flex items-center justify-between py-5">
-      <ModeToggle />
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-    </nav>
+    <div className="container">
+      <nav className="flex items-center justify-between py-5 w-full lg:w-3/4 mx-auto">
+        <ModeToggle />
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+      </nav>
+    </div>
   );
 };
 
