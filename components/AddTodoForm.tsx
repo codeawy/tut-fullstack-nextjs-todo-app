@@ -98,8 +98,8 @@ const AddTodoForm = ({ userId }: { userId: string | null }) => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={loading}>
-                {loading ? (
+              <Button type="submit" className="space-x-2" disabled={loading}>
+                {!loading ? (
                   <>
                     <Spinner /> Saving
                   </>
